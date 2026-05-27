@@ -25,6 +25,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { mathTopics, levelInfo, type ChunkType, type ContentChunk } from "@/lib/math-data"
+import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
@@ -146,7 +147,7 @@ const DIFFICULTY_LABELS: Record<number, string> = {
 function ChunkCard({ chunk }: { chunk: ContentChunk }) {
   const meta = CHUNK_META[chunk.type]
   return (
-    <div className={`rounded-lg p-4 ${meta.cardClass}`}>
+    <div className={cn("rounded-lg p-4", meta.cardClass)}>
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-1.5 text-sm font-semibold text-foreground">
           {meta.icon}
@@ -183,9 +184,21 @@ export default async function TopicPage({
   const levelData = levelInfo[topic.level]
   const hasChunks = topic.chunks && topic.chunks.length > 0
 
-  // Separate advanced notes from main chunks
-  const mainChunks = hasChunks ? topic.chunks!.filter((c) => c.type !== "advanced_note") : []
-  const advancedChunks = hasChunks ? topic.chunks!.filter((c) => c.type === "advanced_note") : []
+  // Separate advanced notes from main chunks in a single pass
+  const { mainChunks, advancedChunks } = (topic.chunks ?? []).reduce<{
+    mainChunks: ContentChunk[]
+    advancedChunks: ContentChunk[]
+  }>(
+    (acc, chunk) => {
+      if (chunk.type === "advanced_note") {
+        acc.advancedChunks.push(chunk)
+      } else {
+        acc.mainChunks.push(chunk)
+      }
+      return acc
+    },
+    { mainChunks: [], advancedChunks: [] },
+  )
 
   return (
     <div className="min-h-screen bg-background">
