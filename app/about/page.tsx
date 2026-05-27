@@ -135,7 +135,7 @@ export default function AboutPage() {
             </p>
             <div className="flex justify-center gap-4 pt-4">
               <Button size="lg" asChild>
-                <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+                <a href="https://github.com/amg567/math-wiki" target="_blank" rel="noopener noreferrer">
                   <Github className="mr-2 h-5 w-5" />
                   Contribute on GitHub
                 </a>
