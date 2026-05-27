@@ -34,7 +34,7 @@ export interface MathTopic {
   title: string
   description: string
   level: "high-school" | "undergraduate" | "masters" | "phd"
-  /** Numeric difficulty: 0=high-school … 5=research */
+  /** Numeric difficulty: 0=high-school, 1=early-undergrad, 2=advanced-undergrad, 3=grad, 4=advanced-grad, 5=research */
   difficulty?: 0 | 1 | 2 | 3 | 4 | 5
   branch: string
   prerequisites?: string[]

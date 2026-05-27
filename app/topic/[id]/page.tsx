@@ -40,6 +40,8 @@ const CHUNK_META: Record<
     label: string
     icon: React.ReactNode
     cardClass: string
+    /** Optional extra classes applied to the content paragraph (e.g. font-mono for notation) */
+    contentClass?: string
     badgeVariant: "default" | "secondary" | "outline" | "destructive"
   }
 > = {
@@ -124,7 +126,8 @@ const CHUNK_META: Record<
   notation: {
     label: "Notation",
     icon: <Code2 className="h-4 w-4" />,
-    cardClass: "border-l-4 border-l-cyan-500 bg-cyan-50/50 dark:bg-cyan-950/20 font-mono text-sm",
+    cardClass: "border-l-4 border-l-cyan-500 bg-cyan-50/50 dark:bg-cyan-950/20",
+    contentClass: "font-mono text-sm",
     badgeVariant: "outline",
   },
   connection: {
@@ -157,7 +160,9 @@ function ChunkCard({ chunk }: { chunk: ContentChunk }) {
           {DIFFICULTY_LABELS[chunk.difficulty]}
         </Badge>
       </div>
-      <p className="text-sm text-foreground leading-relaxed whitespace-pre-line">{chunk.content}</p>
+      <p className={cn("text-sm text-foreground leading-relaxed whitespace-pre-line", meta.contentClass)}>
+        {chunk.content}
+      </p>
     </div>
   )
 }
@@ -184,7 +189,7 @@ export default async function TopicPage({
   const levelData = levelInfo[topic.level]
   const hasChunks = topic.chunks && topic.chunks.length > 0
 
-  // Separate advanced notes from main chunks in a single pass
+  // Split chunks in a single pass: advanced notes render in a separate section below main content
   const { mainChunks, advancedChunks } = (topic.chunks ?? []).reduce<{
     mainChunks: ContentChunk[]
     advancedChunks: ContentChunk[]
