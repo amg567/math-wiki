@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const isGitHubActions = process.env.GITHUB_ACTIONS === "true"
-const repositoryName = "math-wiki"
+const repositoryName = process.env.GITHUB_REPOSITORY?.split("/")[1]
+const isUserOrOrgSite = repositoryName?.toLowerCase().endsWith(".github.io")
+const basePath = isGitHubActions && repositoryName && !isUserOrOrgSite ? `/${repositoryName}` : ""
 
 const nextConfig = {
   typescript: {
@@ -10,8 +12,8 @@ const nextConfig = {
     unoptimized: true,
   },
   output: "export",
-  basePath: isGitHubActions ? `/${repositoryName}` : "",
-  assetPrefix: isGitHubActions ? `/${repositoryName}/` : "",
+  basePath,
+  assetPrefix: basePath,
 }
 
 export default nextConfig
